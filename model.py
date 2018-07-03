@@ -42,6 +42,12 @@ class AutoEncoder:
             self.logger = logger
 
     def build_graph(self, x_ph):
+        """
+        Build graph
+
+        :param x_ph: the placeholder of input
+        :return: None
+        """
         with tf.variable_scope('encoder'):
             self.x = x_ph
             self.logger.debug('x: {}'.format(self.x))
