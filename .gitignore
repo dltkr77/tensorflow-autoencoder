@@ -1,0 +1,15 @@
+# log files
+*.log
+
+# Intellij IDE
+.idea/
+*.iml
+
+# Mac OSX
+.DS_Store
+
+# Native
+*.o
+
+# compiled code
+*.pyc
