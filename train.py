@@ -57,7 +57,7 @@ def scatter(scatter_data, result_dir, f_name):
         plt.scatter(value['x'], value['y'], marker=(1, 2), label=str(key))
 
     plt.legend(loc='best')
-    plt.savefig(os.path.join(result_dir, '{}.png'.format(f_name)))
+    plt.savefig(os.path.join(result_dir, 'train_{}.png'.format(f_name)))
 
 
 def main(args):
