@@ -10,13 +10,10 @@ autoencoder implemented with tensorflow
 Sparse Autoencoder의 경우 실질적으로 차원 수가 올라가지만, Sparsity 제약조건으로 인해 실제적인 데이터의 차원이 줄어들었다고 보아도 무방하다. 이 Repository에서는 일반적인 Autoencoder만을 다룬다.
 
 입력 데이터 x 로부터 출력값 y 까지의 과정은 아래와 같다.
-$$
-input: x \to encoder: h(\cdot) \to latent \ vector, \ z \in \R^{d_z}, \ z=h(x) \to decoder: g(\cdot) \to output, \ y \in \R^d, \ y=g(h(x)) \\\\
-h(x) = W_ex+b_e \\\\
-g(h(x)) = W_dz+b_d \\\\
-$$
+
+![x to y](./images/x_to_y.png)
+
 모델의 최종 목표는 입력 데이터와, 모델의 복원값의 차이를 최소화 하는 것이다.
-$$
-Reconstruction \ error \ L(x, y): ||x-y||^2 or \ cross \ entropy \\\\
-Minimize \ L_{AE} = \sum_{x \in D}L(x, g(h(x)))
-$$
+
+![loss](./images/loss.png)
+
