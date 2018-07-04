@@ -8,40 +8,16 @@ import argparse
 import os
 
 import tensorflow as tf
-import numpy as np
 import matplotlib.pyplot as plt
 
 from utils import restore
 from utils import get_network
 from utils import build_graph
+from utils import next_mnist_data
 
 
 g_logger = tf.logging
 g_logger.set_verbosity(tf.logging.DEBUG)
-
-
-def next_batch(mnist, batch_size=128):
-    """
-    get next batch with mnist
-
-    :param mnist: mnist dataset
-    :param batch_size: batch size
-    :return: generator (x_list, y_list)
-    """
-    train_data = mnist.train.images
-    train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
-
-    xs = []
-    ys = []
-    for x, y in zip(train_data, train_labels):
-        xs.append(x)
-        ys.append(y)
-        if len(xs) >= batch_size:
-            yield xs, ys
-            xs = []
-            ys = []
-
-    yield xs, ys
 
 
 def scatter(scatter_data, result_dir, f_name):
@@ -92,7 +68,7 @@ def main(args):
             losses = 0
             cnt = 0
             # get data with batch size
-            for x, y in next_batch(mnist):
+            for x, y in next_mnist_data(mnist, 'train'):
                 _, loss, z, x_ = sess.run(nodes, feed_dict={ae.x: x})
                 # make scatter data with latent variables(z)
                 for key, value in zip(y, z):
