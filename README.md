@@ -17,3 +17,8 @@ Sparse Autoencoder의 경우 실질적으로 차원 수가 올라가지만, Spar
 
 ![loss](./images/loss.png)
 
+## Visualization
+
+### Training
+
+![train result](./images/train_result.gif)
