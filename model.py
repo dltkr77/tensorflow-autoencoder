@@ -66,20 +66,20 @@ class AutoEncoder:
             self.optimizer = tf.train.AdamOptimizer(self.learning_rate)
             self.logger.debug('optimizer: {}'.format(self.optimizer))
 
-            train = self.optimizer.minimize(self.loss)
-            self.logger.debug('train: {}'.format(train))
+            self.train = self.optimizer.minimize(self.loss)
+            self.logger.debug('train: {}'.format(self.train))
 
     def encoder(self, x):
         """
         Encoder
-        activation: elu for test
+        activation: leaky_relu for test
 
         :param x: input
         :return: encoded_x
         """
         result_x = x
         for dim in self.encoder_dims:
-            result_x = tf.layers.dense(result_x, dim, activation=tf.nn.elu)
+            result_x = tf.layers.dense(result_x, dim, activation=tf.nn.leaky_relu)
             self.logger.debug('result_x: {}'.format(result_x))
 
         return result_x
@@ -87,14 +87,14 @@ class AutoEncoder:
     def decoder(self, z):
         """
         Decoder
-        activation: elu for test
+        activation: leaky_relu for test
 
         :param z: latent variables
         :return: decoded(x_hat)
         """
         result_z = z
         for dim in self.decoder_dims + [self.x.shape[-1]]:
-            result_z = tf.layers.dense(result_z, dim, activation=tf.nn.elu)
+            result_z = tf.layers.dense(result_z, dim, activation=tf.nn.leaky_relu)
             self.logger.debug('result_z: {}'.format(result_z))
 
         return result_z
