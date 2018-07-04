@@ -62,7 +62,8 @@ def scatter(scatter_data, result_dir, f_name):
 
 def main(args):
     # create autoencoder
-    ae = AutoEncoder([4, 2], lr=args.lr, logger=g_logger)
+    hidden_dims = [int(h) for h in args.hiddens.split(',')]
+    ae = AutoEncoder(hidden_dims, lr=args.lr, logger=g_logger)
 
     # build graph
     with tf.Graph().as_default():
@@ -126,5 +127,6 @@ if __name__ == '__main__':
     parser.add_argument('--restore', type=str, default=None, help='the directory for restore')
     parser.add_argument('--result', type=str, default='./results', help='the directory of result')
     parser.add_argument('--epoch', type=int, default=1000, help='number of epoch')
+    parser.add_argument('--hiddens', type=str, default="4,2", help='comma separated hidden dimensions')
     args = parser.parse_args()
     main(args)
