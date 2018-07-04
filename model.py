@@ -48,15 +48,18 @@ class AutoEncoder:
         :param x_ph: the placeholder of input
         :return: None
         """
+        with tf.name_scope('regularizer'):
+            regularizer = tf.contrib.layers.l2_regularizer(scale=0.1)
+
         with tf.variable_scope('encoder'):
             self.x = x_ph
             self.logger.debug('x: {}'.format(self.x))
 
-            self.z = self.encoder(self.x)
+            self.z = self.encoder(self.x, regularizer=regularizer)
             self.logger.debug('z: {}'.format(self.z))
 
         with tf.variable_scope('decoder'):
-            self.x_ = self.decoder(self.z)
+            self.x_ = self.decoder(self.z, regularizer=regularizer)
             self.logger.debug('x_: {}'.format(self.x_))
 
         with tf.name_scope('train'):
@@ -69,7 +72,7 @@ class AutoEncoder:
             self.train = self.optimizer.minimize(self.loss)
             self.logger.debug('train: {}'.format(self.train))
 
-    def encoder(self, x):
+    def encoder(self, x, regularizer=None):
         """
         Encoder
         activation: leaky_relu for test
@@ -79,12 +82,15 @@ class AutoEncoder:
         """
         result_x = x
         for dim in self.encoder_dims:
-            result_x = tf.layers.dense(result_x, dim, activation=tf.nn.leaky_relu)
+            result_x = tf.layers.dense(result_x, dim,
+                                       activation=tf.nn.leaky_relu,
+                                       kernel_regularizer=regularizer,
+                                       reuse=tf.get_variable_scope().reuse)
             self.logger.debug('result_x: {}'.format(result_x))
 
         return result_x
 
-    def decoder(self, z):
+    def decoder(self, z, regularizer=None):
         """
         Decoder
         activation: leaky_relu for test
@@ -94,7 +100,10 @@ class AutoEncoder:
         """
         result_z = z
         for dim in self.decoder_dims + [self.x.shape[-1]]:
-            result_z = tf.layers.dense(result_z, dim, activation=tf.nn.leaky_relu)
+            result_z = tf.layers.dense(result_z, dim,
+                                       activation=tf.nn.leaky_relu,
+                                       kernel_regularizer=regularizer,
+                                       reuse=tf.get_variable_scope().reuse)
             self.logger.debug('result_z: {}'.format(result_z))
 
         return result_z
