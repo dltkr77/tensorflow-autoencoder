@@ -11,8 +11,9 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
-from model import AutoEncoder
 from utils import restore
+from utils import get_network
+from utils import build_graph
 
 
 g_logger = tf.logging
@@ -62,21 +63,16 @@ def scatter(scatter_data, result_dir, f_name):
 
 def main(args):
     # create autoencoder
-    hidden_dims = [int(h) for h in args.hiddens.split(',')]
-    ae = AutoEncoder(hidden_dims, lr=args.lr, logger=g_logger)
+    ae = get_network(args.hiddens, logger=g_logger)
 
     # build graph
-    with tf.Graph().as_default():
-        x_ph = tf.placeholder(dtype=tf.float64, shape=[None, 784])
-        ae.build_graph(x_ph)
-        sess = tf.Session()
-        saver = tf.train.Saver()
+    sess, saver = build_graph(ae, [None, 784])
 
-        if args.restore:
-            restore(sess, saver, args.restore)
-        else:
-            g_logger.info('Initialize the model')
-            sess.run(tf.global_variables_initializer())
+    if args.restore:
+        restore(sess, saver, args.restore)
+    else:
+        g_logger.info('Initialize the model')
+        sess.run(tf.global_variables_initializer())
 
     # make result directory if not exists
     if not os.path.exists(args.result):
