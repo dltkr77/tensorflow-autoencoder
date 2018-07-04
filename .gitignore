@@ -13,3 +13,7 @@
 
 # compiled code
 *.pyc
+
+# for dev environment
+venv
+results
