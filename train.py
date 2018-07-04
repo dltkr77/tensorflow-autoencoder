@@ -87,32 +87,37 @@ def main(args):
     figure = plt.figure(figsize=(8, 8))
     scatter_data = {}
 
-    # Learn number of epoch times
-    nodes = [ae.train, ae.loss, ae.z, ae.x_]
-    for i in range(1, args.epoch+1):
-        losses = 0
-        cnt = 0
-        # get data with batch size
-        for x, y in next_batch(mnist):
-            _, loss, z, x_ = sess.run(nodes, feed_dict={ae.x: x})
-            # make scatter data with latent variables(z)
-            for key, value in zip(y, z):
-                if key not in scatter_data:
-                    scatter_data[key] = {'x': [], 'y': []}
+    last_epoch = 0
+    try:
+        # Learn number of epoch times
+        nodes = [ae.train, ae.loss, ae.z, ae.x_]
+        for i in range(1, args.epoch+1):
+            losses = 0
+            cnt = 0
+            # get data with batch size
+            for x, y in next_batch(mnist):
+                _, loss, z, x_ = sess.run(nodes, feed_dict={ae.x: x})
+                # make scatter data with latent variables(z)
+                for key, value in zip(y, z):
+                    if key not in scatter_data:
+                        scatter_data[key] = {'x': [], 'y': []}
 
-                scatter_data[key]['x'].append(value[0])
-                scatter_data[key]['y'].append(value[1])
+                    scatter_data[key]['x'].append(value[0])
+                    scatter_data[key]['y'].append(value[1])
 
-            losses += loss
-            cnt += 1
+                losses += loss
+                cnt += 1
+                last_epoch += 1
 
-        g_logger.info('epoch: {}, loss: {}'.format(i, losses/cnt))
-        scatter(scatter_data, args.result, i)
-        figure.clear()
-        scatter_data.clear()
+            g_logger.info('epoch: {}, loss: {}'.format(i, losses/cnt))
+            scatter(scatter_data, args.result, i)
+            figure.clear()
+            scatter_data.clear()
 
-    # save checkpoint
-    saver.save(sess, args.result + '/checkpoint', global_step=args.epoch)
+        # save checkpoint
+        saver.save(sess, args.result + '/checkpoint', global_step=args.epoch)
+    except KeyboardInterrupt:
+        saver.save(sess, args.result + '/checkpoint', global_step=last_epoch)
 
 
 if __name__ == '__main__':
