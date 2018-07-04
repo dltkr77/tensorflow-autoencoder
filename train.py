@@ -107,7 +107,7 @@ def main(args):
 
                 losses += loss
                 cnt += 1
-                last_epoch += 1
+            last_epoch = i
 
             g_logger.info('epoch: {}, loss: {}'.format(i, losses/cnt))
             scatter(scatter_data, args.result, i)
