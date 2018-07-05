@@ -38,6 +38,23 @@ def scatter(scatter_data, result_dir, f_name):
     plt.savefig(os.path.join(result_dir, 'train_{}.png'.format(f_name)))
 
 
+def make_scatter_data(s_dict, z, y):
+    """
+    make scatter data dictionary for scatter
+
+    :param s_dict: scatter dictionary
+    :param z: latent variables
+    :param y: labels
+    :return:
+    """
+    for key, value in zip(y, z):
+        if key not in s_dict:
+            s_dict[key] = {'x': [], 'y': []}
+            
+        s_dict[key]['x'].append(value[0])
+        s_dict[key]['y'].append(value[1])
+
+
 def main(args):
     # create autoencoder
     ae = get_network(args.hiddens, logger=g_logger)
@@ -63,8 +80,8 @@ def main(args):
     mnist = tf.contrib.learn.datasets.load_dataset('mnist')
 
     figure = plt.figure(figsize=(8, 8))
-    scatter_data = {}
 
+    scatter_data = {}
     last_epoch = 0
     try:
         # Learn number of epoch times
@@ -75,16 +92,13 @@ def main(args):
             # get data with batch size
             for x, y in next_mnist_data(mnist, 'train'):
                 _, loss, z, x_ = sess.run(nodes, feed_dict={ae.x: x})
-                # make scatter data with latent variables(z)
-                for key, value in zip(y, z):
-                    if key not in scatter_data:
-                        scatter_data[key] = {'x': [], 'y': []}
 
-                    scatter_data[key]['x'].append(value[0])
-                    scatter_data[key]['y'].append(value[1])
+                # make scatter data with latent variables(z)
+                make_scatter_data(scatter_data, z, y)
 
                 losses += loss
                 cnt += 1
+
             last_epoch = i
 
             g_logger.info('epoch: {}, loss: {}'.format(i, losses/cnt))
