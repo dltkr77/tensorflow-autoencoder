@@ -1,0 +1,1 @@
+{"lr": 0.0001, "restore": null, "result": "./results", "epoch": 100, "hiddens": "128,64,32,16,2"}
