@@ -22,3 +22,19 @@ Sparse Autoencoder의 경우 실질적으로 차원 수가 올라가지만, Spar
 ### Training
 
 ![train result](./images/train_result.gif)
+
+### Test
+
+테스트 데이터 중, 원본 이미지
+
+![original](./result_sample/test/0_original.png)
+
+Encoder: x(784) -> hidden(128) -> hidden(64) -> hidden(32) -> hidden(16) -> hidden(8) -> z(2)
+
+Decoder: z(2) -> hidden(8) -> hidden(16) -> hidden(32) -> hidden(64) -> hidden(128) -> x_hat(784)
+
+위와 같은 네트워크 구조로 100 epoch 학습 후, Decoder가 복원한 이미지
+
+![reconstruct](./result_sample/test/0_reconstruct.png)
+
+`CNN`을 사용했다면 더욱 정확하게 복원되었겠지만, 일반적인 Fully-Connected 구조로 얼마나 2차원 공간에 Mapping이 가능한지 확인하는 정도로 구현하였다. Flat한 구조로는 1과 0은 대단히 잘 복원하지만, 비슷한 숫자끼리는 정확히 복원을 하기 어려움을 알 수 있다.
