@@ -14,6 +14,7 @@ from utils import restore
 from utils import get_network
 from utils import build_graph
 from utils import next_mnist_data
+from utils import save_config
 
 
 g_logger = tf.logging
@@ -54,6 +55,9 @@ def main(args):
     # make result directory if not exists
     if not os.path.exists(train_result):
         os.makedirs(train_result)
+
+    # save configuraion
+    save_config(args.__dict__, os.path.join(args.result, 'config.json'))
 
     # use mnist for test
     mnist = tf.contrib.learn.datasets.load_dataset('mnist')

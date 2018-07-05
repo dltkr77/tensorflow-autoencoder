@@ -15,6 +15,7 @@ from utils import restore
 from utils import get_network
 from utils import build_graph
 from utils import next_mnist_data
+from utils import load_config
 
 
 g_logger = tf.logging
@@ -45,8 +46,11 @@ def save_mnist_images(data, result_dir, f_name, suffix='', row_col_size=1):
 
 
 def main(args):
+    # load configuration
+    config = load_config(os.path.join(args.restore, 'config.json'))
+
     # create autoencoder
-    ae = get_network(args.hiddens, logger=g_logger)
+    ae = get_network(config['hiddens'], logger=g_logger)
 
     # build graph
     sess, saver, _ = build_graph(ae, input_shape=[None, 784])
@@ -72,7 +76,6 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('restore', type=str, help='the directory for restore')
-    parser.add_argument('--hiddens', type=str, default="4,2", help='comma separated hidden dimensions')
     parser.add_argument('--result', type=str, default='./results', help='the directory of result')
     args = parser.parse_args()
     main(args)
