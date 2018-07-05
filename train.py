@@ -15,6 +15,7 @@ from utils import get_network
 from utils import build_graph
 from utils import next_mnist_data
 from utils import save_config
+from utils import load_config
 
 
 g_logger = tf.logging
@@ -50,14 +51,19 @@ def make_scatter_data(s_dict, z, y):
     for key, value in zip(y, z):
         if key not in s_dict:
             s_dict[key] = {'x': [], 'y': []}
-            
+
         s_dict[key]['x'].append(value[0])
         s_dict[key]['y'].append(value[1])
 
 
 def main(args):
+    hiddens = args.hiddens
+    if args.restore:
+        config = load_config(os.path.join(args.restore, 'config.json'))
+        hiddens = config['hiddens']
+
     # create autoencoder
-    ae = get_network(args.hiddens, logger=g_logger)
+    ae = get_network(hiddens, logger=g_logger)
 
     # build graph
     sess, saver, init_op = build_graph(ae, [None, 784])
