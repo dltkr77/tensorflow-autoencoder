@@ -80,7 +80,9 @@ def main(args):
         os.makedirs(train_result)
 
     # save configuraion
-    save_config(args.__dict__, os.path.join(args.result, 'config.json'))
+    save_dict = args.__dict__
+    save_dict['hiddens'] = hiddens
+    save_config(save_dict, os.path.join(args.result, 'config.json'))
 
     # use mnist for test
     mnist = tf.contrib.learn.datasets.load_dataset('mnist')
