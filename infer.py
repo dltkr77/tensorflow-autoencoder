@@ -49,7 +49,7 @@ def main(args):
     ae = get_network(args.hiddens, logger=g_logger)
 
     # build graph
-    sess, saver = build_graph(ae, input_shape=[None, 784])
+    sess, saver, _ = build_graph(ae, input_shape=[None, 784])
     restore(sess, saver, args.restore)
 
     test_result = os.path.join(args.result, 'test')

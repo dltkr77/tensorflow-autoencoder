@@ -42,17 +42,18 @@ def main(args):
     ae = get_network(args.hiddens, logger=g_logger)
 
     # build graph
-    sess, saver = build_graph(ae, [None, 784])
+    sess, saver, init_op = build_graph(ae, [None, 784])
 
     if args.restore:
         restore(sess, saver, args.restore)
     else:
         g_logger.info('Initialize the model')
-        sess.run(tf.global_variables_initializer())
+        sess.run(init_op)
 
+    train_result = os.path.join(args.result, 'train')
     # make result directory if not exists
-    if not os.path.exists(args.result):
-        os.makedirs(args.result)
+    if not os.path.exists(train_result):
+        os.makedirs(train_result)
 
     # use mnist for test
     mnist = tf.contrib.learn.datasets.load_dataset('mnist')
@@ -83,7 +84,7 @@ def main(args):
             last_epoch = i
 
             g_logger.info('epoch: {}, loss: {}'.format(i, losses/cnt))
-            scatter(scatter_data, args.result, i)
+            scatter(scatter_data, train_result, i)
             figure.clear()
             scatter_data.clear()
 

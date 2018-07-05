@@ -51,5 +51,6 @@ def build_graph(network, input_shape, dtype=tf.float64):
         network.build_graph(x_ph)
         sess = tf.Session()
         saver = tf.train.Saver()
+        init_op = tf.global_variables_initializer()
 
-    return sess, saver
+    return sess, saver, init_op
