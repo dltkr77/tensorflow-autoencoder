@@ -82,10 +82,13 @@ class AutoEncoder:
         """
         result_x = x
         for dim in self.encoder_dims:
-            result_x = tf.layers.dense(result_x, dim,
-                                       activation=tf.nn.leaky_relu,
-                                       kernel_regularizer=regularizer,
-                                       reuse=tf.get_variable_scope().reuse)
+            try:
+                result_x = tf.layers.dense(result_x, dim,
+                                           activation=tf.nn.leaky_relu,
+                                           kernel_regularizer=regularizer,
+                                           reuse=tf.get_variable_scope().reuse)
+            except ValueError:
+                raise ValueError('use tensorflow 1.8.0 or dtype=tf.float32')
             self.logger.debug('result_x: {}'.format(result_x))
 
         return result_x
@@ -100,10 +103,13 @@ class AutoEncoder:
         """
         result_z = z
         for dim in self.decoder_dims + [self.x.shape[-1]]:
-            result_z = tf.layers.dense(result_z, dim,
-                                       activation=tf.nn.leaky_relu,
-                                       kernel_regularizer=regularizer,
-                                       reuse=tf.get_variable_scope().reuse)
+            try:
+                result_z = tf.layers.dense(result_z, dim,
+                                           activation=tf.nn.leaky_relu,
+                                           kernel_regularizer=regularizer,
+                                           reuse=tf.get_variable_scope().reuse)
+            except ValueError:
+                raise ValueError('use tensorflow 1.8.0 or dtype=tf.float32')
             self.logger.debug('result_z: {}'.format(result_z))
 
         return result_z
